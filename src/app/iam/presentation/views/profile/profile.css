@@ -1,0 +1,3 @@
+:host { display:block; } .profile-page { padding:40px; max-width:950px; margin:auto; } .profile-heading { display:flex; align-items:center; gap:20px; margin-bottom:28px; } .profile-heading h2,.profile-heading p { margin:0; } dl { margin:0; } dl > div { padding:20px 0; border-top:1px solid var(--line); } dt { font-size:14px; color:var(--muted); margin-bottom:8px; } dd { margin:0; font-size:18px; overflow-wrap:anywhere; } @media(max-width:600px) { .profile-page { padding:24px 16px; } }
+
+button { margin-top:24px; min-height:48px; }
