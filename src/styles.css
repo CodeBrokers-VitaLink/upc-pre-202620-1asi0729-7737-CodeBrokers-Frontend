@@ -1,1 +1,209 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+:root {
+  --green: #006d57;
+  --ink: #19312c;
+  --muted: #52685c;
+  --mat-sys-primary: #006d57;
+  --mat-sys-on-primary: #ffffff;
+  --mat-sys-secondary-container: #e5f0ea;
+  --mat-sys-on-secondary-container: #19312c;
+  --line: #d8e6df;
+  --bg: #f3f8f5;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  --app-font-family: var(--mat-sys-body-large-font), sans-serif;
+  --mat-form-field-container-text-font: var(--app-font-family);
+  --mat-form-field-outlined-label-text-font: var(--app-font-family);
+  --mat-form-field-filled-label-text-font: var(--app-font-family);
+  --mat-form-field-subscript-text-font: var(--app-font-family);
+  --mat-select-trigger-text-font: var(--app-font-family);
+  --mat-option-label-text-font: var(--app-font-family);
+  --mat-checkbox-label-text-font: var(--app-font-family);
+  margin: 0;
+  font-family: var(--app-font-family);
+  color: var(--ink);
+  background: var(--bg);
+}
+a {
+  color: var(--green);
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #00876a;
+  outline-offset: 4px;
+}
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+h1 {
+  font-size: clamp(30px, 3vw, 50px);
+  line-height: 1.15;
+  letter-spacing: -1.5px;
+  margin-bottom: 18px;
+}
+h2 {
+  font-size: 24px;
+  letter-spacing: -0.5px;
+}
+h3 {
+  font-size: 17px;
+}
+p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+small {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+select,
+input[type='datetime-local'] {
+  background: white;
+  border: 1px solid #a8c1b5;
+  border-radius: 9px;
+  padding: 15px;
+  color: var(--ink);
+  min-height: 48px;
+}
+.eyebrow {
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.panel {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 24px;
+}
+.grow {
+  flex: 1;
+}
+.avatar {
+  display: inline-flex;
+  width: 70px;
+  height: 70px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e5f0ea;
+  border: 1px solid #d2e4db;
+  font-size: 24px;
+  font-weight: 700;
+  color: #326858;
+  flex-shrink: 0;
+}
+.avatar.small {
+  width: 44px;
+  height: 44px;
+  font-size: 16px;
+  background: white;
+}
+.badge {
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.badge { color: var(--green); background: #eaf4ed; }
+.empty {
+  padding: 30px;
+  text-align: center;
+}
+.mat-mdc-outlined-button {
+  color: var(--green) !important;
+  border-color: var(--green) !important;
+}
+@media (max-width: 1100px) {
+  .panel {
+    padding: 24px;
+  }
+}
+@media (max-width: 700px) {
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+  .panel {
+    padding: 20px;
+    border-radius: 16px;
+  }
+  .badge {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+  h2 {
+    font-size: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}.badge { color: var(--green); background: #eaf4ed; }
+.empty {
+  padding: 30px;
+  text-align: center;
+}
+.mat-mdc-outlined-button {
+  color: var(--green) !important;
+  border-color: var(--green) !important;
+}
+@media (max-width: 1100px) {
+  .panel {
+    padding: 24px;
+  }
+}
+@media (max-width: 700px) {
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+  .panel {
+    padding: 20px;
+    border-radius: 16px;
+  }
+  .badge {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+  h2 {
+    font-size: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

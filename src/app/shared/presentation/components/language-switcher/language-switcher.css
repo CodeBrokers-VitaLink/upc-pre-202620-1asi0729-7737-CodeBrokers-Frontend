@@ -1,0 +1,15 @@
+:host {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+mat-button-toggle-group {
+  border-radius: 9px;
+}
+mat-button-toggle {
+  font-family: inherit;
+}
+@media (max-width: 600px) {
+  :host {
+    --mat-standard-button-toggle-height: 38px;
+  }
+}
