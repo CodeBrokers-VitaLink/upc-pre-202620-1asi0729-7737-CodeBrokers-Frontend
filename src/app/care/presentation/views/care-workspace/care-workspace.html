@@ -1,0 +1,352 @@
+<section class="workspace" [class.family-design]="role() === 'family'">
+  <p class="eyebrow">
+    {{ 'app.' + (role() === 'doctor' ? 'professionalCare' : 'familyCare') | translate }}
+  </p>
+  <div class="page-heading">
+    <div>
+      <h1>{{ 'app.' + title | translate }}</h1>
+      <p>
+        {{
+          'app.' +
+            (view() === 'patients'
+              ? 'patientsDescription'
+              : role() === 'doctor'
+                ? 'summaryDescription'
+                : 'familyDescriptionTitle') | translate
+        }}
+      </p>
+    </div>
+  </div>
+  @if (store.error()) {
+    <p class="notice error" role="alert">{{ 'app.' + store.error() | translate }}</p>
+  }
+  @if (store.message()) {
+    <p class="notice success" role="status">{{ 'app.' + store.message() | translate }}</p>
+  }
+  @if (validation) {
+    <p class="notice error" role="alert">{{ 'app.' + validation | translate }}</p>
+  }
+  @if (role() === 'family' && view() === 'dashboard') {
+    <label class="selector"
+      >{{ 'app.elder' | translate
+      }}<select [value]="patient()?.id ?? ''" (change)="select($any($event.target).value)">
+        @for (p of patients(); track p.id) {
+          <option [value]="p.id">{{ p.name }}</option>
+        }
+      </select></label
+    >
+  }
+  @if (view() === 'dashboard' && role() === 'doctor') {
+    <div class="stats">
+      <article class="panel stat">
+        <p>{{ 'app.pending' | translate }}</p>
+        <strong>{{ pending() }}</strong
+        ><small>{{ store.pendingPatients() }} {{ 'app.pendingPatients' | translate }}</small>
+      </article>
+      <article class="panel stat">
+        <p>{{ 'app.review' | translate }}</p>
+        <strong>{{ reviews() }}</strong
+        ><small>{{ 'app.ongoing' | translate }}</small>
+      </article>
+      <a class="panel stat" routerLink="/doctor/patients"
+        ><p>{{ 'app.assigned' | translate }}</p>
+        <strong>{{ patients().length }}</strong
+        ><small>{{ 'app.patients' | translate }} →</small></a
+      >
+    </div>
+    <app-patient-summary />
+    <article class="panel">
+      <div class="section-heading">
+        <div>
+          <h2>{{ 'app.alerts' | translate }}</h2>
+          <small>{{ 'app.lastSync' | translate }}: {{ dates.format(store.lastSync()) }}</small>
+        </div>
+        <small>{{ dashboardAlerts().length }} {{ 'app.results' | translate }}</small>
+      </div>
+      <div class="filters compact">
+        <mat-form-field appearance="outline"
+          ><mat-label>{{ 'app.status' | translate }}</mat-label
+          ><mat-select [value]="alertStatus()" (selectionChange)="alertStatus.set($event.value)">
+            @for (s of ['PENDING', 'IN_REVIEW', 'ATTENDED', 'ALL']; track s) {
+              <mat-option [value]="s">{{
+                'app.' + (s === 'ALL' ? 'all' : s) | translate
+              }}</mat-option>
+            }
+          </mat-select></mat-form-field
+        ><mat-form-field appearance="outline"
+          ><mat-label>{{ 'app.priority' | translate }}</mat-label
+          ><mat-select [value]="order()" (selectionChange)="order.set($event.value)"
+            ><mat-option value="priority">{{ 'app.highFirst' | translate }}</mat-option
+            ><mat-option value="recent">{{ 'app.recentFirst' | translate }}</mat-option></mat-select
+          ></mat-form-field
+        >
+      </div>
+      <app-alert-list [alerts]="dashboardAlerts()" role="doctor" [showPatient]="true" />
+    </article>
+  }
+  @if (view() === 'patients') {
+    <div class="panel filters">
+      <mat-form-field appearance="outline" class="grow"
+        ><mat-label>{{ 'app.search' | translate }}</mat-label
+        ><input
+          matInput
+          [ngModel]="query()"
+          (ngModelChange)="query.set($event)"
+          [placeholder]="'app.searchPlaceholder' | translate" /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>{{ 'app.status' | translate }}</mat-label
+        ><mat-select [value]="patientStatus()" (selectionChange)="patientStatus.set($event.value)"
+          ><mat-option value="ALL">{{ 'app.all' | translate }}</mat-option
+          ><mat-option value="OPEN">{{ 'app.attention' | translate }}</mat-option
+          ><mat-option value="WELL">{{ 'app.well' | translate }}</mat-option></mat-select
+        ></mat-form-field
+      ><mat-checkbox [checked]="staleOnly()" (change)="staleOnly.set($event.checked)">{{
+        'app.staleOnly' | translate
+      }}</mat-checkbox
+      ><button mat-stroked-button (click)="clear()">{{ 'app.clear' | translate }}</button>
+    </div>
+    <p class="result-count" role="status">
+      {{ filteredPatients().length }} {{ 'app.found' | translate }}
+    </p>
+    <div class="patient-grid">
+      @for (p of filteredPatients(); track p.id) {
+        <a class="panel patient-card" [routerLink]="'/doctor/patients/' + p.id"
+          ><div class="card-top">
+            <span class="avatar">{{ p.initials }}</span
+            ><span>↗</span>
+          </div>
+          <h2>{{ p.name }}</h2>
+          <p>{{ p.id }} · {{ p.age }} {{ 'app.years' | translate }} · {{ p.location }}</p>
+          <div class="patient-meta">
+            <div>
+              {{ 'app.openAlerts' | translate }}<strong>{{ countOpen(p.id) }}</strong>
+            </div>
+            <div>
+              {{ 'app.lastRecord' | translate }}<small>{{ dates.format(lastRecord(p.id)) }}</small>
+            </div>
+          </div>
+          @if (p.stale) {
+            <small class="warning">{{ 'app.stale' | translate }}</small>
+          }
+        </a>
+      } @empty {
+        <p class="empty">{{ 'app.empty' | translate }}</p>
+      }
+    </div>
+  }
+  @if (view() === 'dashboard' && role() === 'family') {
+    @if (patient(); as p) {
+      <article class="panel family-summary">
+        <span class="avatar">{{ p.initials }}</span>
+        <div class="grow">
+          <p class="eyebrow">{{ 'app.yourFamily' | translate }}</p>
+          <h2>{{ 'app.familyGreeting' | translate:{name: store.currentCaregiver()?.name, patient: p.familyDisplayName || p.name} }}</h2>
+          <p>{{ p.name }} · {{ p.age }} {{ 'app.years' | translate }} · {{ p.location }} · {{ p.id }}</p>
+        </div>
+        <div>
+          <p class="eyebrow">{{ 'app.openAlerts' | translate }}</p>
+          <strong class="big-number">{{ openAlerts().length }}</strong>
+        </div>
+      </article>
+      <div class="wellbeing" [class.attention]="needsAttention()">
+        <strong>{{
+          'app.' + (needsAttention() ? 'attention' : p.stale || !latest().length ? 'noData' : 'well') | translate
+        }}</strong
+        ><small>{{ 'app.storedNotice' | translate }}</small>
+      </div>
+      <div class="measurement-heading">
+        <h2>{{ 'app.measurements' | translate }}</h2>
+        <label>{{ 'app.measurementFilter' | translate }}
+          <select [value]="measurementFilter()" (change)="measurementFilter.set($any($event.target).value)">
+            @for (level of ['all','normal','warning','danger','unknown']; track level) {
+              <option [value]="level">{{ 'app.measurement' + level | translate }}</option>
+            }
+          </select>
+        </label>
+      </div>
+      <div class="measurement-grid">
+        @for (r of filteredMeasurements(); track r.id) {
+          <article class="panel measurement">
+            <span class="heart">♡</span>
+            <h3>{{ 'app.' + r.type | translate }}</h3>
+            <strong [class]="'measurement-value level-' + assessment(r)"
+              >{{ r.value }} <small>{{ r.unit }}</small></strong
+            ><small class="measurement-status">{{ 'app.measurement' + assessment(r) | translate }}</small>
+            <small>{{ dates.format(r.recordedAt) }}</small>
+              @if (r.providerName) { <small>{{ 'app.reviewedBy' | translate }}: {{ r.providerName }}</small> }
+          </article>
+        } @empty {
+          <p>{{ 'app.empty' | translate }}</p>
+        }
+      </div>
+      <p class="reference-note">{{ 'app.referenceNotice' | translate }}</p>
+      <div class="care-overview">
+        <article class="panel week-panel">
+          <p class="eyebrow">{{ 'app.weekTitle' | translate }}</p>
+          <h2>{{ 'app.weekDescription' | translate }}</h2>
+          <div class="week-days">
+            @for (day of week(); track day.date) {
+              <div><small>{{ day.day }}</small><span [attr.aria-label]="'app.measurement' + day.state | translate">{{ day.state === 'normal' ? '✓' : day.state === 'warning' ? '!' : '—' }}</span><small>{{ day.number }}</small></div>
+            }
+          </div>
+          <small>{{ 'app.weekLegend' | translate }}</small>
+          @if (latestReview(); as review) { <p class="review-summary">{{ 'app.lastMedicalReview' | translate }}: <strong>{{ review.providerName }}</strong> · {{ dates.format(review.recordedAt) }}</p> }
+        </article>
+      </div>
+      <article class="panel">
+        <div class="section-heading">
+          <h2>{{ 'app.cases' | translate }}</h2>
+          <small>{{ openAlerts().length }} {{ 'app.results' | translate }}</small>
+        </div>
+        <app-alert-list [alerts]="openAlerts()" role="family" />
+        @if (openAlerts().length) { <button mat-stroked-button type="button">{{ 'app.contactAction' | translate }}</button> }
+      </article>
+
+    } @else if (!store.loading()) {
+      <p>{{ 'app.noPatients' | translate }}</p>
+    }
+  }
+  @if (view() === 'patients/:id') {
+    @if (patient(); as p) {
+      <a [routerLink]="'/' + role() + '/dashboard'">← {{ 'app.back' | translate }}</a>
+      <article class="panel">
+        <div class="family-summary">
+          <span class="avatar">{{ p.initials }}</span>
+          <div>
+            <h2>{{ p.name }}</h2>
+            <p>{{ p.id }} · {{ p.age }} {{ 'app.years' | translate }} · {{ p.location }}</p>
+          </div>
+        </div>
+        <h2>{{ 'app.cases' | translate }}</h2>
+        <app-alert-list [alerts]="patientAlerts()" [role]="role()" />
+      </article>
+      <article class="panel">
+        <h2>{{ 'app.history' | translate }}</h2>
+        @for (r of records(); track r.id) {
+          <div class="history-row">
+            <span class="heart">♡</span>
+            <div>
+              <strong>{{ 'app.' + r.type | translate }}</strong
+              ><small>{{ dates.format(r.recordedAt) }}</small>
+              @if (r.note) {
+                <p>
+                  {{
+                    r.note === 'routine' || r.note === 'followUp'
+                      ? ('app.' + r.note | translate)
+                      : r.note
+                  }}
+                </p>
+              }
+            </div>
+            <strong
+              >{{ r.value }} <small>{{ r.unit }}</small></strong
+            >
+          </div>
+        } @empty {
+          <p>{{ 'app.noRecords' | translate }}</p>
+        }
+      </article>
+    } @else if (!store.loading()) {
+      <p>{{ 'app.empty' | translate }}</p>
+    }
+  }
+  @if (view() === 'alerts/:alertId') {
+    @if (alert(); as a) {
+      <a [routerLink]="'/' + role() + '/patients/' + a.patientId"
+        >← {{ 'app.detail' | translate }}</a
+      >
+      <article class="panel">
+        <div class="section-heading">
+          <div>
+            <h2>{{ patient()?.name }}</h2>
+            <p>{{ 'app.' + a.type | translate }} · {{ a.id }} · {{ dates.format(a.raisedAt) }}</p>
+          </div>
+          <div class="badges">
+            <span [class]="'badge severity-' + a.severity">{{
+              'app.' + a.severity | translate
+            }}</span
+            ><span [class]="'badge status-' + a.status">{{ 'app.' + a.status | translate }}</span>
+          </div>
+        </div>
+        <div class="related">
+          <h3>{{ 'app.trigger' | translate }}</h3>
+          @if (related(a); as r) {
+            <strong>{{ r.value }} {{ r.unit }}</strong
+            ><small>{{ dates.format(r.recordedAt) }}</small>
+            @if (!a.recordId) {
+              <p>{{ 'app.triggerNotice' | translate }}</p>
+            }
+          } @else {
+            <p>{{ 'app.noTrigger' | translate }}</p>
+          }
+        </div>
+        <h3>{{ 'app.interventions' | translate }}</h3>
+        @for (i of store.interventionsFor(a.id); track i.id) {
+          <div class="history-row">
+            <div>
+              <strong>{{ i.actor }}</strong
+              ><small>{{ dates.format(i.at) }}</small>
+              @if (i.note) {
+                <p>{{ i.note }}</p>
+              }
+            </div>
+            <span class="badge">{{ 'app.' + i.to | translate }}</span>
+          </div>
+        } @empty {
+          <p>{{ 'app.noInterventions' | translate }}</p>
+        }
+        @if (a.open) {
+          @if (role() === 'doctor') {
+            <p>{{ 'app.assignedDoctor' | translate }}: <strong>{{ doctorProfile.user()?.name || ('iam.notProvided' | translate) }}</strong></p>
+          }
+          <mat-form-field appearance="outline" class="full-width"
+            ><mat-label>{{ 'app.observation' | translate }}</mat-label
+            ><textarea matInput [(ngModel)]="observation" maxlength="500" rows="3"></textarea>
+          </mat-form-field>
+          <div class="actions">
+            @if (role() === 'doctor') {
+              @if (a.status === 'PENDING') {
+                <button
+                  mat-stroked-button
+                  (click)="status('IN_REVIEW')"
+                  [disabled]="store.saving() || store.loading()"
+                >
+                  {{ 'app.reviewAction' | translate }}
+                </button>
+              }
+              <button
+                mat-flat-button
+                (click)="status('ATTENDED')"
+                [disabled]="store.saving() || store.loading()"
+              >
+                {{ 'app.attendAction' | translate }}
+              </button>
+            } @else {
+              <button
+                mat-flat-button
+                type="button"
+              >
+                {{ 'app.contactAction' | translate }}
+              </button>
+            }
+          </div>
+        }
+      </article>
+    } @else if (!store.loading()) {
+      <p>{{ 'app.empty' | translate }}</p>
+    }
+  }
+
+  @if (view() === 'network') {
+    @for (p of patients(); track p.id) {
+      <article class="panel family-information">
+        <dl>
+          <div><dt>{{ 'app.givenName' | translate }}</dt><dd>{{ p.givenName }}</dd></div>
+          <div><dt>{{ 'app.familyName' | translate }}</dt><dd>{{ p.familyName }}</dd></div>
+          <div><dt>{{ 'app.age' | translate }}</dt><dd>{{ p.age }} {{ 'app.years' | translate }}</dd></div>
+          <div><dt>{{ 'iam.hospital' | translate }}</dt><dd>{{ p.hospital || ('iam.notProvided' | translate) }}</dd></div>
+        </dl>
+      </article>
+    }
+  }
+</section>
