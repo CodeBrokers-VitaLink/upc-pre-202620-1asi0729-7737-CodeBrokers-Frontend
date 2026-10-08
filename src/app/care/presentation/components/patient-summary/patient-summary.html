@@ -1,0 +1,16 @@
+<section class="patient-overview" aria-labelledby="patient-overview-title">
+  <h2 id="patient-overview-title">{{ 'app.patientOverview' | translate }}</h2>
+  @for (card of cards(); track card.patient.id) {
+    <a [class]="'overview-card priority-' + card.level" [routerLink]="'/doctor/patients/' + card.patient.id">
+      <div class="card-content">
+        <div class="identity"><span class="avatar">{{ card.patient.initials }}</span><div><h3>{{ card.patient.name }}</h3><small>{{ card.patient.age }} {{ 'app.years' | translate }}</small><span class="priority-label">{{ 'app.' + card.label | translate }}</span></div></div>
+        <div class="vitals">
+          @for (measurement of card.measurements; track measurement.type) {
+            <div class="vital"><h4>{{ 'app.' + measurement.type | translate }}</h4><div class="reading">@if (measurement.record; as record) { <strong [class]="'value-' + measurement.level">{{ record.value }}</strong><small>{{ record.unit }}</small> } @else { <strong class="value-unknown">—</strong> }</div><small class="state">{{ 'app.measurement' + measurement.level | translate }}</small>@if (measurement.reference) { <small>{{ 'app.referenceRange' | translate }}: {{ measurement.reference }}</small> }@if (measurement.record; as record) { <small>{{ dates.format(record.recordedAt) }}</small> }</div>
+          }
+        </div>
+      </div>
+      <div class="card-footer"><span>{{ 'app.viewPatientHistory' | translate }}</span><small>{{ card.patient.id }}</small></div>
+    </a>
+  }
+</section>

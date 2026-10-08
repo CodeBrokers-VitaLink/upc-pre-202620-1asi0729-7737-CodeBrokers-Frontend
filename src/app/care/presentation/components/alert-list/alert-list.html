@@ -1,0 +1,37 @@
+@for (a of alerts(); track a.id) {
+  <div class="alert-row">
+    <div class="alert-person">
+      @if (showPatient()) {
+        <span class="avatar small">{{ patient(a.patientId)?.initials }}</span>
+      }
+      <div>
+        <strong>{{
+          showPatient() ? patient(a.patientId)?.name : ('app.' + a.type | translate)
+        }}</strong
+        ><small
+          >{{ showPatient() ? ('app.' + a.type | translate) + ' · ' : '' }}{{ a.id }} ·
+          {{ dates.format(a.raisedAt) }}</small
+        >
+      </div>
+    </div>
+    <span class="badge" [class]="'badge severity-' + a.severity">{{
+      'app.' + a.severity | translate
+    }}</span
+    ><span class="badge" [class]="'badge status-' + a.status">{{
+      'app.' + a.status | translate
+    }}</span>
+    @if (role() === 'doctor') {
+      <a [routerLink]="'/doctor/alerts/' + a.id">{{ 'app.follow' | translate }} →</a>
+    } @else if (trigger(a); as record) {
+      <strong [class]="'trigger-value level-' + assessment(record)">{{ record.value }} <small>{{ record.unit }}</small></strong>
+    }
+    @if (lastActor(a.id); as intervention) {
+      <small class="audit-preview"
+        >{{ intervention.actor }} · {{ 'app.' + intervention.to | translate }} ·
+        {{ dates.format(intervention.at) }}</small
+      >
+    }
+  </div>
+} @empty {
+  <p class="empty">{{ 'app.empty' | translate }}</p>
+}
