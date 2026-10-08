@@ -1,0 +1,9 @@
+<section class="profile-page"><p class="eyebrow">{{ 'iam.account' | translate }}</p><h1>{{ 'iam.profile' | translate }}</h1>
+@if (store.error()) { <p role="alert">{{ 'iam.profileError' | translate }}</p> }
+@if (store.user(); as user) {
+  <article class="panel"><div class="profile-heading"><span class="avatar">{{ user.name.charAt(0) }}</span><div><h2>{{ user.name }}</h2><p>{{ 'iam.' + user.role.code | translate }}</p></div></div>
+  <dl><div><dt>{{ 'iam.fullName' | translate }}</dt><dd>{{ user.name }}</dd></div><div><dt>{{ 'iam.email' | translate }}</dt><dd>{{ user.email }}</dd></div><div><dt>{{ 'iam.phone' | translate }}</dt><dd>{{ user.phone || ('iam.notProvided' | translate) }}</dd></div>@if (user.role.code === 'doctor') { <div><dt>{{ 'iam.hospital' | translate }}</dt><dd>{{ user.hospital || ('iam.notProvided' | translate) }}</dd></div> }</dl>
+  <button mat-stroked-button type="button" (click)="signOut()">{{ 'iam.signOut' | translate }}</button>
+  </article>
+}
+</section>

@@ -1,0 +1,22 @@
+<section class="login-card">
+  <aside class="brand-panel">
+    <div class="login-brand"><span class="brand-mark">♥</span><div><strong>VitaLink</strong><small>{{ 'iam.brandSubtitle' | translate }}</small></div></div>
+    <p>{{ 'iam.brandDescription' | translate }}</p>
+    <span class="circle circle-top" aria-hidden="true"></span><span class="circle circle-bottom" aria-hidden="true"></span>
+  </aside>
+  <div class="form-panel">
+    <h1>{{ 'iam.loginTitle' | translate }}</h1>
+    <p class="description">{{ 'iam.loginDescription' | translate }}</p>
+    <form #loginForm="ngForm" (ngSubmit)="submit(loginForm)">
+      <label for="login-email">{{ 'iam.email' | translate }}</label>
+      <input id="login-email" name="email" type="email" autocomplete="username" [(ngModel)]="email" required email #emailField="ngModel" />
+      @if (emailField.invalid && (emailField.touched || loginForm.submitted)) { <small class="field-error">{{ 'iam.emailRequired' | translate }}</small> }
+      <label for="login-password">{{ 'iam.password' | translate }}</label>
+      <div class="password-field"><input id="login-password" name="password" [type]="showPassword() ? 'text' : 'password'" autocomplete="current-password" [(ngModel)]="password" required /><button mat-icon-button type="button" (click)="showPassword.set(!showPassword())" [attr.aria-label]="'iam.' + (showPassword() ? 'hidePassword' : 'showPassword') | translate"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>@if (showPassword()) { <path d="M3 3l18 18"/> }</svg></button></div>
+      @if (authentication.error()) { <p class="form-error" role="alert">{{ 'iam.' + authentication.error() | translate }}</p> }
+      <button mat-flat-button class="submit" type="submit" [disabled]="authentication.signingIn()">{{ 'iam.signIn' | translate }} <span aria-hidden="true">→</span></button>
+    </form>
+    <div class="request-access"><small>{{ 'iam.noAccount' | translate }}</small><span>{{ 'iam.requestAccess' | translate }} ↗</span></div>
+
+  </div>
+</section>

@@ -1,0 +1,20 @@
+:host { display:block; padding:48px 24px; }
+.login-card { display:grid; grid-template-columns: .85fr 1.2fr; max-width:900px; min-height:510px; margin:0 auto; border:1px solid var(--line); border-radius:24px; overflow:hidden; background:white; }
+.brand-panel { position:relative; overflow:hidden; padding:44px 38px; background:linear-gradient(140deg,#214f43,#14352d); color:white; }
+.login-brand { position:relative; z-index:1; display:flex; gap:12px; align-items:center; }
+.brand-mark { display:grid; place-items:center; background:white; color:var(--green); width:40px; height:40px; border-radius:12px; font-size:24px; }
+.login-brand strong { font-size:28px; }
+.login-brand small { display:block; color:#bfdfd0; font-size:11px; letter-spacing:.5px; text-transform:uppercase; }
+.brand-panel p { position:relative; z-index:1; color:#bfdfd0; font-size:14px; line-height:1.65; margin-top:18px; }
+.circle { position:absolute; width:270px; height:270px; border:1px solid #ffffff08; border-radius:50%; }
+.circle-top { right:-80px; top:-55px; } .circle-bottom { bottom:-65px; left:-70px; width:320px; height:320px; }
+.form-panel { padding:52px 58px 40px; }
+h1 { font-size:28px; letter-spacing:-.8px; margin-bottom:10px; }
+.description { font-size:14px; margin-bottom:30px; }
+label { display:block; text-transform:uppercase; font-size:12px; letter-spacing:.5px; margin:20px 0 8px; }
+input { width:100%; height:48px; border:1px solid var(--line); border-radius:10px; background:#fbfdfc; color:var(--ink); padding:12px; }
+.password-field { position:relative; } .password-field input { padding-right:48px; } .password-field button { position:absolute; right:2px; top:2px; color:var(--green); }
+.submit { width:100%; margin-top:26px; background:#214f43 !important; color:white !important; border-radius:10px !important; min-height:48px; } .submit span { margin-left:12px; }
+.request-access { display:flex; flex-direction:column; text-align:center; gap:4px; margin-top:24px; padding:16px 10px; background:var(--bg); border:1px solid var(--line); border-radius:10px; }
+.request-access span { font-size:13px; color:var(--green); font-weight:600; }  .form-error,.field-error { font-size:13px; color:var(--green); }
+@media(max-width:650px) { :host { padding:24px 16px; } .login-card { grid-template-columns:1fr; } .brand-panel { padding:28px; } .brand-panel p { margin-bottom:0; } .form-panel { padding:32px 24px; } }
