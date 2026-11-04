@@ -1,6 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://vitallink-fakeapi.onrender.com',
-  providerId: 'DR-01',
-  familyId: 'FC-01',
+  // Production hosting must proxy /api/v1 to the Java backend.
+  apiUrl: '/api/v1',
 };

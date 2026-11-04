@@ -16,5 +16,5 @@ input { width:100%; height:48px; border:1px solid var(--line); border-radius:10p
 .password-field { position:relative; } .password-field input { padding-right:48px; } .password-field button { position:absolute; right:2px; top:2px; color:var(--green); }
 .submit { width:100%; margin-top:26px; background:#214f43 !important; color:white !important; border-radius:10px !important; min-height:48px; } .submit span { margin-left:12px; }
 .request-access { display:flex; flex-direction:column; text-align:center; gap:4px; margin-top:24px; padding:16px 10px; background:var(--bg); border:1px solid var(--line); border-radius:10px; }
-.request-access span { font-size:13px; color:var(--green); font-weight:600; }  .form-error,.field-error { font-size:13px; color:var(--green); }
+.request-access a { font-size:13px; color:var(--green); font-weight:600; }  .form-error,.field-error { font-size:13px; color:var(--green); }
 @media(max-width:650px) { :host { padding:24px 16px; } .login-card { grid-template-columns:1fr; } .brand-panel { padding:28px; } .brand-panel p { margin-bottom:0; } .form-panel { padding:32px 24px; } }

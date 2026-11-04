@@ -13,9 +13,15 @@ export class AuthenticationStore {
     this.signingIn.set(true); this.error.set('');
     return this.service.signIn(email, password).pipe(
       map(session => { this.session.set(session); return session.role.home; }),
-      catchError(error => { this.error.set(error.message === 'invalidCredentials' ? 'invalidCredentials' : 'loginUnavailable'); return throwError(() => error); }),
+      catchError(error => { this.error.set(error.status === 401 ? 'invalidCredentials' : 'loginUnavailable'); return throwError(() => error); }),
       finalize(() => this.signingIn.set(false)),
     );
   }
-  signOut(): void { this.service.signOut(); this.session.set(null); this.error.set(''); }
+  accessToken(): string | null { return this.service.accessToken(); }
+  expire(): void { this.service.clearLocalSession(); this.session.set(null); this.error.set(''); }
+  signOut(): void {
+    // Subscribe before clearing storage so the interceptor can attach the current token.
+    this.service.signOut().subscribe({ error: () => {} });
+    this.expire();
+  }
 }

@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { forkJoin, map } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { AlertStatus } from '../../domain/model/alert.entity';
-import { Intervention } from '../../domain/model/intervention.entity';
 import type { PatientResponse } from '../patient/patient.response';
 import type { AlertResponse } from '../alert/alert.response';
 import type { RecordResponse } from '../record/record.response';
@@ -49,18 +48,10 @@ export class CareService {
       .pipe(map(AlertAssembler.toEntity));
   }
 
-  updateAlert(id: string, status: AlertStatus) {
-    return this.http
-      .patch<AlertResponse>(`${this.url}/alerts/${encodeURIComponent(id)}`, { status })
-      .pipe(map(AlertAssembler.toEntity));
+  updateAlert(id: string, status: AlertStatus, note: string, expectedVersion: number) {
+    return this.http.patch<AlertResponse>(
+      `${this.url}/alerts/${encodeURIComponent(id)}`,
+      { status, note, expectedVersion },
+    ).pipe(map(AlertAssembler.toEntity));
   }
-  addIntervention(value: Intervention) {
-    return this.http
-      .post<InterventionResponse>(
-        `${this.url}/interventions`,
-        InterventionAssembler.toResponse(value),
-      )
-      .pipe(map(InterventionAssembler.toEntity));
-  }
-
 }

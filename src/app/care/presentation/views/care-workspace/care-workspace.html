@@ -1,6 +1,6 @@
 <section class="workspace" [class.family-design]="role() === 'family'">
   <p class="eyebrow">
-    {{ 'app.' + (role() === 'doctor' ? 'professionalCare' : 'familyCare') | translate }}
+    {{ 'app.' + (selfCare() ? 'patientCare' : role() === 'doctor' ? 'professionalCare' : 'familyCare') | translate }}
   </p>
   <div class="page-heading">
     <div>
@@ -12,7 +12,7 @@
               ? 'patientsDescription'
               : role() === 'doctor'
                 ? 'summaryDescription'
-                : 'familyDescriptionTitle') | translate
+                : selfCare() ? 'patientDescription' : 'familyDescriptionTitle') | translate
         }}
       </p>
     </div>
@@ -26,7 +26,7 @@
   @if (validation) {
     <p class="notice error" role="alert">{{ 'app.' + validation | translate }}</p>
   }
-  @if (role() === 'family' && view() === 'dashboard') {
+  @if (role() === 'family' && !selfCare() && view() === 'dashboard') {
     <label class="selector"
       >{{ 'app.elder' | translate
       }}<select [value]="patient()?.id ?? ''" (change)="select($any($event.target).value)">
@@ -139,8 +139,8 @@
       <article class="panel family-summary">
         <span class="avatar">{{ p.initials }}</span>
         <div class="grow">
-          <p class="eyebrow">{{ 'app.yourFamily' | translate }}</p>
-          <h2>{{ 'app.familyGreeting' | translate:{name: store.currentCaregiver()?.name, patient: p.familyDisplayName || p.name} }}</h2>
+          <p class="eyebrow">{{ (selfCare() ? 'app.patientCare' : 'app.yourFamily') | translate }}</p>
+          @if (selfCare()) { <h2>{{ p.name }}</h2> } @else { <h2>{{ 'app.familyGreeting' | translate:{name: store.currentCaregiver()?.name, patient: p.familyDisplayName || p.name} }}</h2> }
           <p>{{ p.name }} · {{ p.age }} {{ 'app.years' | translate }} · {{ p.location }} · {{ p.id }}</p>
         </div>
         <div>

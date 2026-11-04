@@ -4,10 +4,11 @@ export interface PatientResponse {
   familyName: string;
   age: number;
   location: string;
-  providerId: string;
+  providerId: string | null;
   familyIds: string[];
   lastRecordAt: string | null;
   outdated: boolean;
   familyDisplayName?: string;
-  hospital?: string;
+  hospital?: string | null;
+  userId?: string | null;
 }

@@ -8,4 +8,5 @@ export interface AlertResponse {
   type: RecordType;
   raisedAt: string;
   recordId?: string | null;
+  version: number;
 }
