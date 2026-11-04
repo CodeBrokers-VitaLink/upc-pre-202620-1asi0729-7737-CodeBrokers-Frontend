@@ -1,1 +1,1 @@
-export interface RoleResponse { code: 'doctor' | 'family'; }
+export interface RoleResponse { code: 'doctor' | 'family' | 'patient'; }

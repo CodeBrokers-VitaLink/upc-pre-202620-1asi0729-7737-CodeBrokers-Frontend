@@ -1,12 +1,12 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthenticationStore } from '../../../application/authentication.store';
 @Component({
-  imports: [FormsModule, MatButtonModule, TranslatePipe],
+  imports: [FormsModule, RouterLink, MatButtonModule, TranslatePipe],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

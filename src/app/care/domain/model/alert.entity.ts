@@ -10,6 +10,7 @@ export class CareAlert {
     public type: RecordType,
     public raisedAt: string,
     public recordId?: string | null,
+    public version: number = 0,
   ) {}
   get open(): boolean {
     return this.status !== 'ATTENDED';

@@ -16,7 +16,7 @@ import type { CareRecord } from '../../../domain/model/record.entity';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LocalizedDateService } from '../../../../shared/i18n/localized-date.service';
 import { AlertList } from '../../components/alert-list/alert-list';
-import { CARE_CONTEXT } from '../../../infrastructure/care/care-context';
+import { AuthenticationStore } from '../../../../iam/application/authentication.store';
 @Component({
   imports: [
     RouterLink,
@@ -46,7 +46,8 @@ export class CareWorkspace {
   private readonly params = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap,
   });
-  readonly role = computed(() => this.routeData()['role'] as string);
+  readonly selfCare = computed(() => this.routeData()['role'] === 'patient');
+  readonly role = computed(() => this.selfCare() ? 'family' : this.routeData()['role'] as string);
   readonly view = computed(() => this.routeData()['view'] as string);
   readonly patients = computed(() =>
     this.role() === 'doctor' ? this.store.professionalPatients() : this.store.familyPatients(),
@@ -135,7 +136,7 @@ export class CareWorkspace {
 
   observation = '';
   validation = '';
-  readonly familyId = inject(CARE_CONTEXT).familyId;
+  readonly familyId = inject(AuthenticationStore).session()?.userId ?? '';
   constructor() {
     this.store.load();
     if (this.role() === 'doctor') this.doctorProfile.load();
@@ -144,7 +145,7 @@ export class CareWorkspace {
     return (
       (
         {
-          dashboard: this.role() === 'doctor' ? 'summaryTitle' : 'familyHome',
+          dashboard: this.selfCare() ? 'patientHome' : this.role() === 'doctor' ? 'summaryTitle' : 'familyHome',
           patients: 'patients',
           'patients/:id': 'detail',
           'alerts/:alertId': 'alertDetail',

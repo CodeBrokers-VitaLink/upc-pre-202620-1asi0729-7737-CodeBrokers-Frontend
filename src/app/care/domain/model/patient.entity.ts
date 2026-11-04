@@ -5,12 +5,13 @@ export class Patient {
     public familyName: string,
     public age: number,
     public location: string,
-    public providerId: string,
+    public providerId: string | null,
     public familyIds: string[],
     public lastRecordAt: string | null,
     public outdated: boolean,
     public familyDisplayName?: string,
-    public hospital?: string,
+    public hospital?: string | null,
+    public userId?: string | null,
   ) {}
   get name(): string {
     return `${this.givenName} ${this.familyName}`;

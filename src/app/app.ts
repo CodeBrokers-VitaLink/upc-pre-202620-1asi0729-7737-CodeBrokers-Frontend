@@ -38,6 +38,8 @@ export class App {
   get role() {
     return this.router.url.startsWith('/doctor')
       ? 'doctor'
+      : this.router.url.startsWith('/patient')
+        ? 'patient'
       : this.router.url.startsWith('/family')
         ? 'family'
         : '';

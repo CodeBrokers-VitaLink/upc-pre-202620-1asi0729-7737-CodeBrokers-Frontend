@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { roleGuard } from './iam/presentation/guards/role.guard';
 export const routes: Routes = [
+  { path: 'register', loadComponent: () => import('./enrollment/presentation/views/register/register').then(m => m.Register) },
   {
     path: '',
     pathMatch: 'full',
@@ -9,16 +10,16 @@ export const routes: Routes = [
         (m) => m.Login,
       ),
   },
-  ...['doctor', 'family'].map(role => ({
+  ...['doctor', 'family', 'patient'].map(role => ({
     path: role + '/profile',
     data: { role },
     canActivate: [roleGuard],
     loadComponent: () => import('./iam/presentation/views/profile/profile').then(m => m.Profile),
   })),
-  ...['doctor', 'family'].flatMap((role) =>
+  ...['doctor', 'family', 'patient'].flatMap((role) =>
     (role === 'doctor'
       ? ['dashboard', 'patients', 'patients/:id', 'alerts/:alertId']
-      : ['dashboard', 'network']
+      : role === 'family' ? ['dashboard', 'network'] : ['dashboard']
     ).map((view) => ({
       path: `${role}/${view}`,
       data: { role, view },
