@@ -16,6 +16,7 @@ export class PatientAssembler {
       value.outdated,
       value.familyDisplayName,
       value.hospital,
+      value.userId,
     );
   }
 
@@ -32,6 +33,7 @@ export class PatientAssembler {
       outdated: value.outdated,
       familyDisplayName: value.familyDisplayName,
       hospital: value.hospital,
+      userId: value.userId,
     };
   }
 }

@@ -12,6 +12,7 @@ export class AlertAssembler {
       value.type,
       value.raisedAt,
       value.recordId,
+      value.version,
     );
   }
 
@@ -24,6 +25,7 @@ export class AlertAssembler {
       type: value.type,
       raisedAt: value.raisedAt,
       recordId: value.recordId,
+      version: value.version,
     };
   }
 }

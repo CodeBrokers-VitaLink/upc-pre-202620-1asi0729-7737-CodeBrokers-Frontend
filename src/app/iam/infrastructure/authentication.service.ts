@@ -1,40 +1,35 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs';
+import { map, of } from 'rxjs';
 import { Session } from '../domain/model/session.entity';
 import { SessionAssembler } from './session.assembler';
-import { SessionResponse } from './session.response';
-import { UserResponse } from './user.response';
 import { UserAssembler } from './user.assembler';
+import { AuthenticationResponse } from './authentication.response';
+import { BackendSessionStorage } from './backend-session.storage';
 import { environment } from '../../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
   private readonly http = inject(HttpClient);
-  private readonly key = 'vitalink-login-session';
+  private readonly storage = inject(BackendSessionStorage);
   restore(): Session | null {
-    try {
-      const raw = sessionStorage.getItem(this.key);
-      if (!raw) return null;
-      const value: unknown = JSON.parse(raw);
-      if (!this.isSession(value)) { this.signOut(); return null; }
-      return SessionAssembler.toEntity(value);
-    } catch { this.signOut(); return null; }
+    const stored = this.storage.read();
+    return stored ? SessionAssembler.toEntity(stored.session) : null;
   }
+  accessToken(): string | null { return this.storage.read()?.token ?? null; }
+  clearLocalSession(): void { this.storage.clear(); }
   signIn(email: string, password: string) {
-    return this.http.get<UserResponse[]>(environment.apiUrl + '/users', {params: {email: email.trim().toLowerCase()}}).pipe(map(users => {
-      const response = users.find(user => user.email.toLowerCase() === email.trim().toLowerCase() && user.password === password && (user.role === 'doctor' || user.role === 'family'));
-      if (!response) throw new Error('invalidCredentials');
-      const user = UserAssembler.toEntity(response);
+    return this.http.post<AuthenticationResponse>(environment.apiUrl + '/auth/sign-in', {
+      email: email.trim().toLowerCase(), password,
+    }).pipe(map(response => {
+      const user = UserAssembler.toEntity(response.user);
       const session = new Session(user.id, user.role);
-      sessionStorage.setItem(this.key, JSON.stringify(SessionAssembler.toResponse(session)));
+      this.storage.save(response.token, response.expiresAt, SessionAssembler.toResponse(session));
       return session;
     }));
   }
-  signOut(): void { sessionStorage.removeItem(this.key); }
-  private isSession(value: unknown): value is SessionResponse {
-    if (!value || typeof value !== 'object') return false;
-    const session = value as Partial<SessionResponse>;
-    return typeof session.userId === 'string' && !!session.userId &&
-      (session.role?.code === 'doctor' || session.role?.code === 'family');
+  signOut() {
+    return this.accessToken()
+      ? this.http.post<void>(environment.apiUrl + '/auth/sign-out', {})
+      : of(undefined);
   }
 }

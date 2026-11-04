@@ -16,7 +16,7 @@
       @if (authentication.error()) { <p class="form-error" role="alert">{{ 'iam.' + authentication.error() | translate }}</p> }
       <button mat-flat-button class="submit" type="submit" [disabled]="authentication.signingIn()">{{ 'iam.signIn' | translate }} <span aria-hidden="true">→</span></button>
     </form>
-    <div class="request-access"><small>{{ 'iam.noAccount' | translate }}</small><span>{{ 'iam.requestAccess' | translate }} ↗</span></div>
+    <div class="request-access"><small>{{ 'iam.noAccount' | translate }}</small><a routerLink="/register">{{ 'enrollment.createAccount' | translate }} ↗</a></div>
 
   </div>
 </section>

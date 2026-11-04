@@ -11,7 +11,7 @@
     @if (role) {
       <button
         mat-stroked-button
-        class="menu-button" [style.display]="role === 'family' ? 'none' : null"
+        class="menu-button" [style.display]="role !== 'doctor' ? 'none' : null"
         (click)="menu.set(!menu())"
         [attr.aria-label]="'app.menu' | translate"
         [attr.aria-expanded]="menu()"
@@ -21,7 +21,14 @@
     }
   </div>
 </header>
-@if (role === 'family') { <nav class="family-nav"><a routerLink="/family/dashboard" routerLinkActive="active">{{ 'app.familyHome' | translate }}</a><a routerLink="/family/network" routerLinkActive="active">{{ 'app.network' | translate }}</a><a routerLink="/family/profile" routerLinkActive="active">{{ 'iam.profile' | translate }}</a><button type="button" routerLink="/" (click)="signOut()">{{ 'iam.signOut' | translate }}</button></nav> }
+@if (role === 'family' || role === 'patient') {
+  <nav class="family-nav">
+    <a [routerLink]="'/' + role + '/dashboard'" routerLinkActive="active">{{ (role === 'patient' ? 'app.patientHome' : 'app.familyHome') | translate }}</a>
+    @if (role === 'family') { <a routerLink="/family/network" routerLinkActive="active">{{ 'app.network' | translate }}</a> }
+    <a [routerLink]="'/' + role + '/profile'" routerLinkActive="active">{{ 'iam.profile' | translate }}</a>
+    <button type="button" routerLink="/" (click)="signOut()">{{ 'iam.signOut' | translate }}</button>
+  </nav>
+}
 <div class="layout" [class.has-sidebar]="role === 'doctor'">
   @if (role === 'doctor') {
     <aside [class.visible]="menu()">

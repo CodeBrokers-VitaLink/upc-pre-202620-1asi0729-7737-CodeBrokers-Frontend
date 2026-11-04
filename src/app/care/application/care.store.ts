@@ -2,19 +2,16 @@ import { AuthenticationStore } from '../../iam/application/authentication.store'
 import { UserStore } from '../../iam/application/user.store';
 import { Injectable, inject, signal, computed, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize, switchMap, throwError, map } from 'rxjs';
+import { finalize, switchMap } from 'rxjs';
 import { CareService } from '../infrastructure/care/care.service';
 import { CareSnapshot } from '../domain/model/care.snapshot';
 import { CareAlert, AlertStatus } from '../domain/model/alert.entity';
-import { Intervention } from '../domain/model/intervention.entity';
 import { Patient } from '../domain/model/patient.entity';
-import { CARE_CONTEXT } from '../infrastructure/care/care-context';
 @Injectable({ providedIn: 'root' })
 export class CareStore {
   private readonly service = inject(CareService);
   private readonly authentication = inject(AuthenticationStore);
   private readonly doctorProfile = inject(UserStore);
-  private readonly context = inject(CARE_CONTEXT);
   private readonly destroy = inject(DestroyRef);
   readonly data = signal<CareSnapshot>({
     patients: [],
@@ -29,12 +26,12 @@ export class CareStore {
   readonly error = signal('');
   readonly message = signal('');
   readonly lastSync = signal<string | null>(null);
-  readonly currentCaregiver = computed(() => this.data().caregivers.find(c => c.id === this.context.familyId));
+  readonly currentCaregiver = computed(() => this.data().caregivers.find(c => c.id === this.authentication.session()?.userId));
   readonly professionalPatients = computed(() =>
-    this.data().patients.filter((p) => p.providerId === this.context.providerId),
+    this.data().patients.filter((p) => p.providerId === this.authentication.session()?.userId),
   );
   readonly familyPatients = computed(() =>
-    this.data().patients.filter((p) => p.familyIds.includes(this.context.familyId)),
+    this.data().patients.filter((p) => this.authentication.role() === 'patient' ? p.userId === this.authentication.session()?.userId : p.familyIds.includes(this.authentication.session()?.userId ?? '')),
   );
   readonly professionalAlerts = computed(() =>
     this.data().alerts.filter((a) => this.professionalPatients().some((p) => p.id === a.patientId)),
@@ -47,22 +44,33 @@ export class CareStore {
           .map((a) => a.patientId),
       ).size,
   );
+  private loadedUserId: string | null = null;
+  private loadGeneration = 0;
   load() {
+    const userId = this.authentication.session()?.userId;
+    if (!userId) return;
+    if (this.loadedUserId !== userId) {
+      this.loadedUserId = userId;
+      this.data.set({ patients: [], alerts: [], records: [], interventions: [], caregivers: [], measurementRanges: [] });
+      this.loading.set(false); this.saving.set(false); this.message.set(''); this.lastSync.set(null);
+    }
     if (this.loading() || this.saving()) return;
+    const generation = ++this.loadGeneration;
     this.loading.set(true);
     this.error.set('');
     this.service
       .load()
       .pipe(
         takeUntilDestroyed(this.destroy),
-        finalize(() => this.loading.set(false)),
+        finalize(() => { if (generation === this.loadGeneration) this.loading.set(false); }),
       )
       .subscribe({
         next: (data) => {
+          if (this.authentication.session()?.userId !== userId || generation !== this.loadGeneration) return;
           this.applySnapshot(data);
           this.lastSync.set(new Date().toISOString());
         },
-        error: () => this.error.set('loadError'),
+        error: () => { if (this.authentication.session()?.userId === userId && generation === this.loadGeneration) this.error.set('loadError'); },
       });
   }
   recordsFor(id: string) {
@@ -92,55 +100,27 @@ export class CareStore {
     this.saving.set(true);
     this.error.set('');
     this.message.set('');
-    // Read current shared state before writing to avoid silently duplicating another person's work.
-    let event: Intervention;
-    this.service
-      .findAlert(alert.id)
-      .pipe(
-        switchMap((current) => {
-          if (current.status !== alert.status || current.status === 'ATTENDED')
-            return throwError(() => new Error('conflict'));
-          event = {
-            id: `I-${crypto.randomUUID()}`,
-            alertId: alert.id,
-            actor: doctor.name,
-            actorId: doctor.id,
-            role: 'professional',
-            from: current.status,
-            to,
-            at: new Date().toISOString(),
-            note: note.trim(),
-          };
-          // JSON Server has no transactions. Persist the actual status before its audit event;
-          // on a partial failure, refresh shared state and report the incomplete operation.
-          return this.service
-            .updateAlert(alert.id, to)
-            .pipe(
-              switchMap((updated) =>
-                this.service.addIntervention(event).pipe(map(() => updated)),
-              ),
-            );
-        }),
-        takeUntilDestroyed(this.destroy),
-        finalize(() => this.saving.set(false)),
-      )
-      .subscribe({
-        next: (updated) => {
-          this.data.update((d) => ({
-            ...d,
-            alerts: d.alerts.map((a) => (a.id === updated.id ? updated : a)),
-            interventions: [...d.interventions, event],
-          }));
-          this.message.set('saved');
-        },
-        error: (err) => {
-          this.error.set(err.message === 'conflict' ? 'conflict' : 'saveError');
-          this.service
-            .load()
-            .pipe(takeUntilDestroyed(this.destroy))
-            .subscribe({ next: (d) => this.applySnapshot(d), error: () => {} });
-        },
-      });
+    // The backend validates the version and writes the intervention atomically.
+    this.service.updateAlert(alert.id, to, note.trim(), alert.version).pipe(
+      switchMap(() => this.service.load()),
+      takeUntilDestroyed(this.destroy),
+      finalize(() => this.saving.set(false)),
+    ).subscribe({
+      next: data => {
+        if (this.authentication.session()?.userId !== session.userId) return;
+        this.applySnapshot(data);
+        this.lastSync.set(new Date().toISOString());
+        this.message.set('saved');
+      },
+      error: error => {
+        if (this.authentication.session()?.userId !== session.userId) return;
+        this.error.set(error.status === 409 ? 'conflict' : 'saveError');
+        this.service.load().pipe(takeUntilDestroyed(this.destroy)).subscribe({
+          next: data => { if (this.authentication.session()?.userId === session.userId) this.applySnapshot(data); },
+          error: () => {},
+        });
+      },
+    });
   }
   private applySnapshot(snapshot: CareSnapshot) {
     this.data.set({
@@ -163,6 +143,7 @@ export class CareStore {
               false,
               p.familyDisplayName,
               p.hospital,
+              p.userId,
             )
           : p;
       }),
