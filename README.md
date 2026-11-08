@@ -33,4 +33,4 @@ El backend en modo desarrollo incluye las cuentas de demostracion ana@vitalink.d
 
 ## Verificacion y produccion
 
-Ejecuta npm run test:ci para las pruebas de frontend y npm run build para generar la compilacion de produccion. Configura el hosting para reenviar /api/v1 al backend y servir index.html en las rutas de Angular.
+Ejecuta npm run test:ci para las pruebas de frontend y npm run build para generar la compilacion de produccion. La URL del backend de Render se configura en src/environments/environment.production.ts. El desarrollo local conserva localhost:8080. Consulta DEPLOYMENT.md para publicar el frontend y autorizar su origen en el backend.

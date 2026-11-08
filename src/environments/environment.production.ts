@@ -1,5 +1,4 @@
 export const environment = {
   production: true,
-  // Production hosting must proxy /api/v1 to the Java backend.
-  apiUrl: '/api/v1',
+  apiUrl: 'https://upc-pre-202620-1asi0729-7737-codebrokers.onrender.com/api/v1',
 };
