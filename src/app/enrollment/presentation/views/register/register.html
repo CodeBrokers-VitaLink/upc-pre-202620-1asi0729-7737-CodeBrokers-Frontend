@@ -47,12 +47,11 @@
           </button>
           @if (doctor.worksInClinic) {
             <label for="doctor-clinic">{{ 'enrollment.clinic' | translate }}</label>
-            <select id="doctor-clinic" name="doctorClinic" [(ngModel)]="doctor.clinicId" required [disabled]="store.loading()">
+            <select id="doctor-clinic" name="doctorClinic" [(ngModel)]="doctor.clinicId" required [disabled]="store.clinicsLoading()">
               <option [ngValue]="null">{{ 'enrollment.chooseClinic' | translate }}</option>
               @for (clinic of store.clinics(); track clinic.id) { <option [value]="clinic.id">{{ clinic.name }}</option> }
             </select>
           } @else { <p class="mode-note">{{ 'enrollment.independentDoctor' | translate }}</p> }
-          <small>{{ 'enrollment.verificationNotice' | translate }}</small>
         }
         @if (mode === 'family' && step === 1) {
           <legend>{{ 'enrollment.patientDetails' | translate }}</legend>
@@ -71,7 +70,7 @@
           </select>
           @if (patient.serviceType === 'clinic') {
             <label for="patient-clinic">{{ 'enrollment.clinic' | translate }}</label>
-            <select id="patient-clinic" name="patientClinic" [ngModel]="patient.clinicId" (ngModelChange)="changeClinic($event)" required [disabled]="store.loading()">
+            <select id="patient-clinic" name="patientClinic" [ngModel]="patient.clinicId" (ngModelChange)="changeClinic($event)" required [disabled]="store.clinicsLoading()">
               <option [ngValue]="null">{{ 'enrollment.chooseClinic' | translate }}</option>
               @for (clinic of store.clinics(); track clinic.id) { <option [value]="clinic.id">{{ clinic.name }}</option> }
             </select>
@@ -105,7 +104,7 @@
         }
         <div class="actions">
           @if (mode === 'family' && step === 1) { <button mat-stroked-button type="button" (click)="back()">{{ 'enrollment.backStep' | translate }}</button> }
-          <button mat-flat-button class="primary" type="submit" [disabled]="store.saving() || (store.loading() && (mode === 'family' && step === 1 || mode === 'doctor' && doctor.worksInClinic))">
+          <button mat-flat-button class="primary" type="submit" [disabled]="store.saving() || (store.loading() && mode === 'family' && step === 1) || (store.clinicsLoading() && mode === 'doctor' && doctor.worksInClinic)">
             {{ (store.saving() ? 'enrollment.saving' : mode === 'family' && step === 0 ? 'enrollment.next' : mode === 'family' ? 'enrollment.registerFamily' : 'enrollment.registerDoctor') | translate }}
           </button>
         </div>
