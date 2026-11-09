@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { catchError, finalize, forkJoin, tap, throwError } from 'rxjs';
+import { catchError, finalize, forkJoin, of, tap, throwError, timeout } from 'rxjs';
 import { ENROLLMENT_PORT, EnrollmentPort } from './enrollment.port';
 import { Clinic } from '../domain/model/clinic.entity';
 import { DoctorOption } from '../domain/model/doctor-option.entity';
@@ -11,18 +11,28 @@ export class EnrollmentStore {
   readonly clinics = signal<Clinic[]>([]);
   readonly doctors = signal<DoctorOption[]>([]);
   readonly loading = signal(false);
+  readonly clinicsLoading = signal(false);
   readonly saving = signal(false);
   readonly error = signal('');
   readonly success = signal(false);
   loadCatalog(): void {
-    this.loading.set(true); this.error.set('');
-    forkJoin({ clinics: this.port.clinics(), doctors: this.port.doctors() }).pipe(
-      finalize(() => this.loading.set(false)),
-    ).subscribe({
-      next: values => { this.clinics.set(values.clinics); this.doctors.set(values.doctors); },
-      error: () => this.error.set('catalogUnavailable'),
-    });
+    if (this.loading()) return;
+    this.loading.set(true); this.clinicsLoading.set(true); this.error.set('');
+    forkJoin({
+      clinics: this.port.clinics().pipe(
+        timeout(90000),
+        tap(values => { this.clinics.set(values); this.clinicsLoading.set(false); }),
+        catchError(() => { this.error.set('catalogUnavailable'); return of(null); }),
+        finalize(() => this.clinicsLoading.set(false)),
+      ),
+      doctors: this.port.doctors().pipe(
+        timeout(90000),
+        tap(values => this.doctors.set(values)),
+        catchError(() => { this.error.set('catalogUnavailable'); return of(null); }),
+      ),
+    }).pipe(finalize(() => this.loading.set(false))).subscribe();
   }
+
   registerDoctor(value: DoctorRegistration) {
     if (!validDoctor(value)) return this.invalid();
     return this.save(this.port.registerDoctor(value));
