@@ -1,5 +1,10 @@
 {
   "app": {
+    "patientStatusDanger": "Alerta alta: revisar mediciones o alertas",
+    "patientStatusWarning": "Requiere revisión",
+    "patientStatusUnknown": "Evaluación incompleta",
+    "patientStatusNormal": "Mediciones en rango de referencia",
+    "measurementContext": "Referencias para adultos en reposo. La glucosa requiere contexto de ayuno, alimentación y tratamiento; los colores no son un diagnóstico.",
     "tagline": "Una red de cuidado más cercana",
     "professional": "Profesional de salud",
     "family": "Familiar cuidador",
