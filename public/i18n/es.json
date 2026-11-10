@@ -184,6 +184,23 @@
     "responsibleDoctor": "Médico responsable",
     "chooseDoctor": "Selecciona un médico",
     "noDoctors": "No hay médicos disponibles para esta selección. Elige otra clínica o modalidad.",
+    "vitalHints": {
+        "heartRate": "Entrada: 20–300 bpm. Referencia en adultos en reposo: 60–100.",
+        "oxygen": "Entrada: 1–100 %. Referencia habitual: 95–100 %. Valores bajos requieren revisión.",
+        "glucose": "Entrada: 20–1000 mg/dL. Referencia en ayunas: 70–99; después de comer se interpreta de otra forma.",
+        "systolic": "Entrada: 40–300 mmHg. Referencia adulta: 90 a menos de 120; debe superar la diastólica.",
+        "diastolic": "Entrada: 20–200 mmHg. Referencia adulta: 60 a menos de 80; debe ser menor que la sistólica."
+    },
+    "vitalStatus": {
+        "empty": "Ingresa una medición.",
+        "invalid": "Valor fuera del rango admitido. Revisa la cifra y la unidad.",
+        "adultOnly": "Sin clasificación: las referencias indicadas son para adultos.",
+        "normal": "En rango de referencia para adultos.",
+        "review": "Fuera del rango de referencia: revisar con el profesional responsable.",
+        "highAlert": "Alerta alta: verifica la medición y solicita valoración médica urgente si es un dato real.",
+        "context": "Requiere contexto para interpretarse; no se puede indicar normalidad solo con este valor.",
+        "pressureOrder": "La presión sistólica debe ser mayor que la diastólica."
+    },
     "vitalsTitle": "Cuatro signos vitales iniciales",
     "simulationNotice": "Completa todas las mediciones. Son datos simulados y no provienen de un dispositivo. La presión sistólica debe ser mayor que la diastólica.",
     "heartRate": "Frecuencia cardíaca (bpm)",
