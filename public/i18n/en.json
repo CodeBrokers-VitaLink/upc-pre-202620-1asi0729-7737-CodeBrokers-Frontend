@@ -1,5 +1,10 @@
 {
   "app": {
+    "patientStatusDanger": "High alert: review readings or alerts",
+    "patientStatusWarning": "Needs review",
+    "patientStatusUnknown": "Incomplete assessment",
+    "patientStatusNormal": "Readings within reference range",
+    "measurementContext": "References apply to adults at rest. Glucose requires fasting, meal and treatment context; colors are not a diagnosis.",
     "tagline": "A closer care network",
     "professional": "Healthcare professional",
     "family": "Family caregiver",

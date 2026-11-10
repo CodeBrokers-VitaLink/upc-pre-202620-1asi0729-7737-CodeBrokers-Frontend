@@ -19,14 +19,21 @@ export class PatientSummary {
     const records = this.store.recordsFor(patient.id);
     const measurements = ['heartRate', 'oxygen', 'glucose', 'bloodPressure'].map(type => {
       const record = records.find(record => record.type === type);
-      const level = record ? MeasurementAssessment.level(record, this.store.data().measurementRanges) : 'unknown';
+      const level = record && patient.age >= 18 ? MeasurementAssessment.level(record, this.store.data().measurementRanges) : 'unknown';
       const range = this.store.data().measurementRanges.find(range => range.id === type && range.unit === record?.unit);
+      const bound = (value: number) => Number(value.toFixed(2));
       const reference = range?.systolic && range.diastolic
-        ? range.systolic.normalMin + '–' + range.systolic.normalMax + ' / ' + range.diastolic.normalMin + '–' + range.diastolic.normalMax
+        ? bound(range.systolic.normalMin) + '–' + bound(range.systolic.normalMax) + ' / ' + bound(range.diastolic.normalMin) + '–' + bound(range.diastolic.normalMax)
         : range?.normalMin != null && range.normalMax != null ? range.normalMin + '–' + range.normalMax : null;
       return {type, record, level, reference};
     });
-    return {patient, priority, level: priority === 3 ? 'danger' : priority === 2 ? 'warning' : 'normal',
-      label: priority === 3 ? 'HIGH' : priority === 2 ? 'MEDIUM' : priority === 1 ? 'LOW' : records.length ? 'noOpenAlerts' : 'noRecords', measurements};
+    const levels = measurements.map(measurement => measurement.level);
+    const level = priority === 3 || levels.includes('danger') ? 'danger'
+      : priority >= 1 || levels.includes('warning') ? 'warning'
+      : levels.includes('unknown') ? 'unknown' : 'normal';
+    const label = level === 'danger' ? 'patientStatusDanger' : level === 'warning' ? 'patientStatusWarning'
+      : level === 'unknown' ? 'patientStatusUnknown' : 'patientStatusNormal';
+    const rank = { danger: 3, warning: 2, unknown: 1, normal: 0 }[level];
+    return {patient, priority: rank, level, label, measurements};
   }).sort((a,b) => b.priority - a.priority));
 }
