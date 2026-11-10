@@ -85,12 +85,22 @@
             <h2 id="vitals-title">{{ 'enrollment.vitalsTitle' | translate }}</h2>
             <p>{{ 'enrollment.simulationNotice' | translate }}</p>
             <div class="fields">
-              <div><label for="heart-rate">{{ 'enrollment.heartRate' | translate }}</label><input id="heart-rate" name="heartRate" type="number" [(ngModel)]="patient.initialVitals.heartRate" required min="1" max="300" step="any" /></div>
-              <div><label for="oxygen">{{ 'enrollment.oxygen' | translate }}</label><input id="oxygen" name="oxygen" type="number" [(ngModel)]="patient.initialVitals.oxygen" required min="0" max="100" step="any" /></div>
-              <div><label for="glucose">{{ 'enrollment.glucose' | translate }}</label><input id="glucose" name="glucose" type="number" [(ngModel)]="patient.initialVitals.glucose" required min="1" max="1000" step="any" /></div>
+              <div><label for="heart-rate">{{ 'enrollment.heartRate' | translate }}</label><input id="heart-rate" name="heartRate" type="number" [(ngModel)]="patient.initialVitals.heartRate" required [min]="vitalLimits.heartRate.min" [max]="vitalLimits.heartRate.max" step="any" aria-describedby="heart-rate-help heart-rate-status" />
+                <small id="heart-rate-help">{{ 'enrollment.vitalHints.heartRate' | translate }}</small>
+                <span id="heart-rate-status" class="vital-status" [attr.data-state]="vitalState('heartRate')" aria-live="polite">{{ 'enrollment.vitalStatus.' + vitalState('heartRate') | translate }}</span></div>
+              <div><label for="oxygen">{{ 'enrollment.oxygen' | translate }}</label><input id="oxygen" name="oxygen" type="number" [(ngModel)]="patient.initialVitals.oxygen" required [min]="vitalLimits.oxygen.min" [max]="vitalLimits.oxygen.max" step="any" aria-describedby="oxygen-help oxygen-status" />
+                <small id="oxygen-help">{{ 'enrollment.vitalHints.oxygen' | translate }}</small>
+                <span id="oxygen-status" class="vital-status" [attr.data-state]="vitalState('oxygen')" aria-live="polite">{{ 'enrollment.vitalStatus.' + vitalState('oxygen') | translate }}</span></div>
+              <div><label for="glucose">{{ 'enrollment.glucose' | translate }}</label><input id="glucose" name="glucose" type="number" [(ngModel)]="patient.initialVitals.glucose" required [min]="vitalLimits.glucose.min" [max]="vitalLimits.glucose.max" step="any" aria-describedby="glucose-help glucose-status" />
+                <small id="glucose-help">{{ 'enrollment.vitalHints.glucose' | translate }}</small>
+                <span id="glucose-status" class="vital-status" [attr.data-state]="vitalState('glucose')" aria-live="polite">{{ 'enrollment.vitalStatus.' + vitalState('glucose') | translate }}</span></div>
               <div class="pressure-group"><span>{{ 'enrollment.bloodPressure' | translate }}</span><div class="pressure-fields">
-                <div><label for="systolic">{{ 'enrollment.systolic' | translate }}</label><input id="systolic" name="systolic" type="number" [(ngModel)]="patient.initialVitals.systolic" required min="1" max="300" step="any" /></div>
-                <div><label for="diastolic">{{ 'enrollment.diastolic' | translate }}</label><input id="diastolic" name="diastolic" type="number" [(ngModel)]="patient.initialVitals.diastolic" required min="1" max="200" step="any" /></div>
+                <div><label for="systolic">{{ 'enrollment.systolic' | translate }}</label><input id="systolic" name="systolic" type="number" [(ngModel)]="patient.initialVitals.systolic" required [min]="vitalLimits.systolic.min" [max]="vitalLimits.systolic.max" step="any" aria-describedby="systolic-help systolic-status" />
+                <small id="systolic-help">{{ 'enrollment.vitalHints.systolic' | translate }}</small>
+                <span id="systolic-status" class="vital-status" [attr.data-state]="vitalState('systolic')" aria-live="polite">{{ 'enrollment.vitalStatus.' + vitalState('systolic') | translate }}</span></div>
+                <div><label for="diastolic">{{ 'enrollment.diastolic' | translate }}</label><input id="diastolic" name="diastolic" type="number" [(ngModel)]="patient.initialVitals.diastolic" required [min]="vitalLimits.diastolic.min" [max]="vitalLimits.diastolic.max" step="any" aria-describedby="diastolic-help diastolic-status" />
+                <small id="diastolic-help">{{ 'enrollment.vitalHints.diastolic' | translate }}</small>
+                <span id="diastolic-status" class="vital-status" [attr.data-state]="vitalState('diastolic')" aria-live="polite">{{ 'enrollment.vitalStatus.' + vitalState('diastolic') | translate }}</span></div>
               </div></div>
             </div>
           </section>
