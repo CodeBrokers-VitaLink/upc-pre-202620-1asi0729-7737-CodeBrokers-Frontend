@@ -1,5 +1,6 @@
 <section class="patient-overview" aria-labelledby="patient-overview-title">
   <h2 id="patient-overview-title">{{ 'app.patientOverview' | translate }}</h2>
+  <p class="assessment-context">{{ 'app.measurementContext' | translate }}</p>
   @for (card of cards(); track card.patient.id) {
     <a [class]="'overview-card priority-' + card.level" [routerLink]="'/doctor/patients/' + card.patient.id">
       <div class="card-content">
