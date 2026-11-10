@@ -25,3 +25,8 @@ small { display:block; margin:10px 0; line-height:1.5; color:var(--muted); }
 .primary { background:var(--green) !important; color:white !important; min-height:46px; } .primary:disabled { opacity:.55; }
 .error { color:#a92232; font-size:14px; line-height:1.5; } .success { padding:18px 0; } .back-link { display:inline-block; margin-top:24px; color:var(--green); }
 @media(max-width:600px) { .registration { padding:22px; } .fields,.account-options { grid-template-columns:1fr; } .vitals { padding:14px; } .actions>* { flex:1; } }
+
+.vital-status { display:block; margin:6px 0 10px; font-size:13px; line-height:1.5; font-weight:600; color:var(--muted); }
+.vital-status[data-state=normal] { color:#137d55; }
+.vital-status[data-state=review],.vital-status[data-state=context] { color:#b97811; }
+.vital-status[data-state=highAlert],.vital-status[data-state=invalid],.vital-status[data-state=pressureOrder] { color:#e75060; }

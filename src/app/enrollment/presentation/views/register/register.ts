@@ -1,3 +1,4 @@
+import { vitalLimits, vitalStatus, VitalField } from '../../../domain/model/vital-guidance';
 import { Component, DestroyRef, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -27,6 +28,8 @@ export class Register {
     serviceType: 'independent', clinicId: null, doctorId: null, consent: false,
     initialVitals: { heartRate: null, oxygen: null, glucose: null, systolic: null, diastolic: null },
   };
+  readonly vitalLimits = vitalLimits;
+  vitalState(field: VitalField) { return vitalStatus(field, this.patient.initialVitals, this.patient.age); }
   constructor() { this.store.loadCatalog(); }
   get availableDoctors() {
     return this.store.doctors().filter(d => d.practiceType === this.patient.serviceType &&

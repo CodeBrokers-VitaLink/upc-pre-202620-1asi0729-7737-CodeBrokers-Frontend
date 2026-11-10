@@ -38,8 +38,8 @@ export function validDoctor(value: DoctorRegistration): boolean {
 }
 export function validVitals(value: InitialVitalSigns): boolean {
   const within = (n: number | null, min: number, max: number): n is number => n !== null && Number.isFinite(n) && n >= min && n <= max;
-  return within(value.heartRate, 1, 300) && within(value.oxygen, 0, 100) && within(value.glucose, 1, 1000) &&
-    within(value.systolic, 1, 300) && within(value.diastolic, 1, 200) && value.systolic > value.diastolic;
+  return within(value.heartRate, 20, 300) && within(value.oxygen, 1, 100) && within(value.glucose, 20, 1000) &&
+    within(value.systolic, 40, 300) && within(value.diastolic, 20, 200) && value.systolic > value.diastolic;
 }
 export function validFamily(value: FamilyRegistration): boolean {
   const p = value.patient;
