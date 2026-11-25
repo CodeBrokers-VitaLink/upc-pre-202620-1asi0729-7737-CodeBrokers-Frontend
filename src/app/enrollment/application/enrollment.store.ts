@@ -33,6 +33,8 @@ export class EnrollmentStore {
     }).pipe(finalize(() => this.loading.set(false))).subscribe();
   }
 
+  lookupLicense(license: string) { return this.port.lookupLicense(license); }
+
   registerDoctor(value: DoctorRegistration) {
     if (!validDoctor(value)) return this.invalid();
     return this.save(this.port.registerDoctor(value));
@@ -47,7 +49,7 @@ export class EnrollmentStore {
     return operation.pipe(
       tap(() => this.success.set(true)),
       catchError((error: Error) => {
-        this.error.set(['duplicateAccount', 'invalidForm'].includes(error.message) ? error.message : 'unavailable');
+        this.error.set(['duplicateAccount', 'invalidForm', 'invalidLicense', 'licenseNameMismatch'].includes(error.message) ? error.message : 'unavailable');
         return throwError(() => error);
       }),
       finalize(() => this.saving.set(false)),

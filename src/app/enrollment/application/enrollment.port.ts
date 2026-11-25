@@ -1,9 +1,11 @@
+import { RegisteredDoctor } from '../domain/model/registered-doctor.entity';
 import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Clinic } from '../domain/model/clinic.entity';
 import { DoctorOption } from '../domain/model/doctor-option.entity';
 import { DoctorRegistration, FamilyRegistration } from '../domain/model/registration.entity';
 export interface EnrollmentPort {
+  lookupLicense(license: string): Observable<RegisteredDoctor>;
   clinics(): Observable<Clinic[]>;
   doctors(): Observable<DoctorOption[]>;
   registerDoctor(value: DoctorRegistration): Observable<void>;

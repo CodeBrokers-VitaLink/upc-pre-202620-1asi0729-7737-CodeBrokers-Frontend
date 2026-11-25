@@ -148,6 +148,7 @@
           <strong class="big-number">{{ openAlerts().length }}</strong>
         </div>
       </article>
+      <app-observations [patientId]="p.id" />
       <div class="wellbeing" [class.attention]="needsAttention()">
         <strong>{{
           'app.' + (needsAttention() ? 'attention' : p.stale || !latest().length ? 'noData' : 'well') | translate
@@ -299,10 +300,6 @@
           @if (role() === 'doctor') {
             <p>{{ 'app.assignedDoctor' | translate }}: <strong>{{ doctorProfile.user()?.name || ('iam.notProvided' | translate) }}</strong></p>
           }
-          <mat-form-field appearance="outline" class="full-width"
-            ><mat-label>{{ 'app.observation' | translate }}</mat-label
-            ><textarea matInput [(ngModel)]="observation" maxlength="500" rows="3"></textarea>
-          </mat-form-field>
           <div class="actions">
             @if (role() === 'doctor') {
               @if (a.status === 'PENDING') {
@@ -314,13 +311,7 @@
                   {{ 'app.reviewAction' | translate }}
                 </button>
               }
-              <button
-                mat-flat-button
-                (click)="status('ATTENDED')"
-                [disabled]="store.saving() || store.loading()"
-              >
-                {{ 'app.attendAction' | translate }}
-              </button>
+              <p>Envía las indicaciones y completa la revisión en el panel de observaciones.</p>
             } @else {
               <button
                 mat-flat-button
@@ -334,6 +325,12 @@
       </article>
     } @else if (!store.loading()) {
       <p>{{ 'app.empty' | translate }}</p>
+    }
+  }
+
+  @if (patient(); as p) {
+    @if (view() !== 'patients' && view() !== 'network' && view() !== 'dashboard') {
+      <app-observations [patientId]="p.id" [doctor]="role() === 'doctor'" />
     }
   }
 

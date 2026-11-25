@@ -1,3 +1,4 @@
+import { Observations } from '../../components/observations/observations';
 import { UserStore } from '../../../../iam/application/user.store';
 import { PatientSummary } from '../../components/patient-summary/patient-summary';
 import { Component, inject, computed, signal } from '@angular/core';
@@ -19,6 +20,7 @@ import { AlertList } from '../../components/alert-list/alert-list';
 import { AuthenticationStore } from '../../../../iam/application/authentication.store';
 @Component({
   imports: [
+    Observations,
     RouterLink,
     FormsModule,
     TranslatePipe,
@@ -46,6 +48,7 @@ export class CareWorkspace {
   private readonly params = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap,
   });
+  private readonly queryParams = toSignal(this.route.queryParamMap, { initialValue: this.route.snapshot.queryParamMap });
   readonly selfCare = computed(() => this.routeData()['role'] === 'patient');
   readonly role = computed(() => this.selfCare() ? 'family' : this.routeData()['role'] as string);
   readonly view = computed(() => this.routeData()['view'] as string);
@@ -57,6 +60,7 @@ export class CareWorkspace {
     const alertId = this.params().get('alertId');
     const id =
       this.params().get('id') ??
+      this.queryParams().get('patientId') ??
       (alertId
         ? this.store.data().alerts.find((a) => a.id === alertId)?.patientId
         : this.selectedId());

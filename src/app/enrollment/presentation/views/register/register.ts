@@ -1,5 +1,5 @@
 import { vitalLimits, vitalStatus, VitalField } from '../../../domain/model/vital-guidance';
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -15,6 +15,38 @@ import { AccountDetails, DoctorRegistration, PatientEnrollment, validAccount } f
   styleUrl: './register.css',
 })
 export class Register {
+  readonly licenseMessage = signal('');
+  readonly licenseChecking = signal(false);
+  private lookupVersion = 0;
+  changeLicense(value: string): void {
+    this.doctor.professionalLicense = value;
+    this.lookupVersion++;
+    this.licenseMessage.set('');
+    this.licenseChecking.set(false);
+  }
+  validateLicense(): void {
+    const license = this.doctor.professionalLicense;
+    const version = ++this.lookupVersion;
+    if (!/^[0-9]{4,10}$/.test(license)) {
+      this.licenseMessage.set('enrollment.invalidLicense');
+      return;
+    }
+    this.licenseChecking.set(true);
+    this.store.lookupLicense(license)
+      .pipe(takeUntilDestroyed(this.destroy)).subscribe({
+        next: doctor => {
+          if (version !== this.lookupVersion) return;
+          this.account.name = doctor.name;
+          this.licenseMessage.set('enrollment.licenseVerified');
+          this.licenseChecking.set(false);
+        },
+        error: error => {
+          if (version !== this.lookupVersion) return;
+          this.licenseMessage.set(error.status === 400 ? 'enrollment.invalidLicense' : 'enrollment.registryUnavailable');
+          this.licenseChecking.set(false);
+        },
+      });
+  }
   readonly store = inject(EnrollmentStore);
   private readonly destroy = inject(DestroyRef);
   mode: 'doctor' | 'family' = 'family';
