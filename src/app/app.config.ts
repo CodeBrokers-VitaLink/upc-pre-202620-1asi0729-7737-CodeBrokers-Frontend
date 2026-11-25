@@ -1,3 +1,5 @@
+import { OBSERVATIONS_PORT } from './care/application/observations.port';
+import { ObservationsHttpService } from './care/infrastructure/observations-http.service';
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
@@ -10,6 +12,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: OBSERVATIONS_PORT, useExisting: ObservationsHttpService },
     { provide: ENROLLMENT_PORT, useExisting: EnrollmentHttpService },
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
