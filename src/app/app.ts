@@ -1,3 +1,4 @@
+import { Notifications } from './care/presentation/components/notifications/notifications';
 import { AuthenticationStore } from './iam/application/authentication.store';
 import { Component, effect, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
@@ -7,6 +8,7 @@ import { LanguageSwitcher } from './shared/presentation/components/language-swit
 @Component({
   selector: 'app-root',
   imports: [
+    Notifications,
     RouterOutlet,
     RouterLink,
     RouterLinkActive,

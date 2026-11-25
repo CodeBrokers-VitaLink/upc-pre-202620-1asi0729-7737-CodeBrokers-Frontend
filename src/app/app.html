@@ -8,6 +8,7 @@
   >
   <div class="header-actions">
     <app-language-switcher />
+    @if (role === 'patient' || role === 'family') { <app-notifications /> }
     @if (role) {
       <button
         mat-stroked-button

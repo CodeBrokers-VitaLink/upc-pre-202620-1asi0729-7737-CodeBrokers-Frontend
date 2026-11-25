@@ -190,21 +190,21 @@
     "chooseDoctor": "Select a doctor",
     "noDoctors": "There are no doctors for this selection. Choose another clinic or service type.",
     "vitalHints": {
-        "heartRate": "Input: 20–300 bpm. Adult resting reference: 60–100.",
-        "oxygen": "Input: 1–100%. Typical reference: 95–100%. Low readings need review.",
-        "glucose": "Input: 20–1000 mg/dL. Fasting reference: 70–99; post-meal readings require different interpretation.",
-        "systolic": "Input: 40–300 mmHg. Adult reference: 90 to below 120; must exceed diastolic pressure.",
-        "diastolic": "Input: 20–200 mmHg. Adult reference: 60 to below 80; must be below systolic pressure."
+      "heartRate": "Input: 20–300 bpm. Adult resting reference: 60–100.",
+      "oxygen": "Input: 1–100%. Typical reference: 95–100%. Low readings need review.",
+      "glucose": "Input: 20–1000 mg/dL. Fasting reference: 70–99; post-meal readings require different interpretation.",
+      "systolic": "Input: 40–300 mmHg. Adult reference: 90 to below 120; must exceed diastolic pressure.",
+      "diastolic": "Input: 20–200 mmHg. Adult reference: 60 to below 80; must be below systolic pressure."
     },
     "vitalStatus": {
-        "empty": "Enter a measurement.",
-        "invalid": "Outside the supported input range. Check the value and unit.",
-        "adultOnly": "Not classified: these references apply to adults.",
-        "normal": "Within the adult reference range.",
-        "review": "Outside the reference range: review with the responsible professional.",
-        "highAlert": "High alert: verify the reading and seek urgent medical assessment if it is a real measurement.",
-        "context": "Interpretation requires context; this value alone cannot establish normality.",
-        "pressureOrder": "Systolic pressure must be greater than diastolic pressure."
+      "empty": "Enter a measurement.",
+      "invalid": "Outside the supported input range. Check the value and unit.",
+      "adultOnly": "Not classified: these references apply to adults.",
+      "normal": "Within the adult reference range.",
+      "review": "Outside the reference range: review with the responsible professional.",
+      "highAlert": "High alert: verify the reading and seek urgent medical assessment if it is a real measurement.",
+      "context": "Interpretation requires context; this value alone cannot establish normality.",
+      "pressureOrder": "Systolic pressure must be greater than diastolic pressure."
     },
     "vitalsTitle": "Four initial vital signs",
     "simulationNotice": "Complete every measurement. These are simulated values, not readings from a device. Systolic pressure must be higher than diastolic pressure.",
@@ -229,6 +229,12 @@
     "backLogin": "Already have an account? Sign in",
     "successTitle": "Registration complete",
     "doctorSuccess": "Your doctor account is ready. Sign in with the email and password you registered.",
-    "familySuccess": "Your account, patient, responsible doctor and four simulated measurements have been saved. Sign in to see the dashboard."
+    "familySuccess": "Your account, patient, responsible doctor and four simulated measurements have been saved. Sign in to see the dashboard.",
+    "invalidLicense": "The medical license number is not valid.",
+    "licenseNameMismatch": "The name does not match the registered license.",
+    "licenseVerified": "Valid license. The registered name has been filled in.",
+    "fakeRegistryNotice": "Validation uses a fictional registry of five doctors.",
+    "checkLicense": "Validate license",
+    "registryUnavailable": "Unable to check the registry. Please try again."
   }
 }

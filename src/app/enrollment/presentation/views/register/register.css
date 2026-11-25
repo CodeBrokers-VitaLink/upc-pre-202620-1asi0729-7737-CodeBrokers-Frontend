@@ -30,3 +30,23 @@ small { display:block; margin:10px 0; line-height:1.5; color:var(--muted); }
 .vital-status[data-state=normal] { color:#137d55; }
 .vital-status[data-state=review],.vital-status[data-state=context] { color:#b97811; }
 .vital-status[data-state=highAlert],.vital-status[data-state=invalid],.vital-status[data-state=pressureOrder] { color:#e75060; }
+
+.license-check {
+  margin-top:12px;
+  min-height:44px;
+  padding:0 20px;
+  border:1px solid var(--green) !important;
+  border-radius:9px;
+  background:var(--bg);
+  color:var(--green) !important;
+  font:inherit;
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:0;
+  transition:background-color .15s ease;
+}
+.license-check:hover:not(:disabled) { background:#e5f5ef; }
+.license-check:focus-visible { outline:2px solid var(--green); outline-offset:3px; }
+.license-check:disabled { opacity:.55; }
+.license-feedback { margin:10px 0 0; font-size:14px; line-height:1.5; color:#a92232; }
+.license-feedback.verified { color:var(--green); }

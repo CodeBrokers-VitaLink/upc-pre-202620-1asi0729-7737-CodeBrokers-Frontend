@@ -40,7 +40,7 @@
           <h2>{{ 'enrollment.professionalDetails' | translate }}</h2>
           <div class="fields">
             <div><label for="specialty">{{ 'enrollment.specialty' | translate }}</label><input id="specialty" name="specialty" [(ngModel)]="doctor.specialty" required maxlength="100" /></div>
-            <div><label for="license">{{ 'enrollment.license' | translate }}</label><input id="license" name="license" [(ngModel)]="doctor.professionalLicense" required pattern="[0-9]{4,10}" inputmode="numeric" /></div>
+            <div><label for="license">{{ 'enrollment.license' | translate }}</label><input id="license" name="license" [ngModel]="doctor.professionalLicense" (ngModelChange)="changeLicense($event)" (blur)="validateLicense()" required pattern="[0-9]{4,10}" inputmode="numeric" /><button mat-stroked-button class="license-check" type="button" (click)="validateLicense()" [disabled]="licenseChecking()">{{ 'enrollment.checkLicense' | translate }}</button>@if (licenseMessage()) { <p class="license-feedback" [class.verified]="licenseMessage() === 'enrollment.licenseVerified'" role="status">{{ licenseMessage() | translate }}</p> }</div>
           </div>
           <button type="button" class="employment-switch" role="switch" [attr.aria-checked]="doctor.worksInClinic" (click)="setEmployment(!doctor.worksInClinic)">
             <span class="toggle" aria-hidden="true"></span>{{ 'enrollment.worksInClinic' | translate }}

@@ -51,3 +51,23 @@ recibe la URL publica de la API y el token de la sesion autenticada.
 Referencias:
 https://render.com/docs/static-sites
 https://render.com/docs/redirects-rewrites
+
+## Observaciones y validacion de colegiaturas
+
+Esta version requiere desplegar el backend con observaciones, notificaciones y
+GET /api/v1/medical-registry/{license}. Los puertos se registran en app.config.ts:
+ObservationsPort usa ObservationsHttpService y EnrollmentPort usa EnrollmentHttpService.
+Los componentes de las mejoras no construyen solicitudes HTTP directamente.
+
+- El doctor escribe observaciones desde el detalle del paciente y completa la revision.
+- Paciente y familiar ven las indicaciones y el profesional/fecha de la ultima atencion.
+- La campana muestra observaciones sin leer y permite marcarlas leidas.
+- Observaciones y campana se actualizan cada 15 segundos.
+- La validacion de colegiatura completa el nombre y comunica numeros invalidos o
+  nombres que no coinciden; el backend vuelve a validar antes de registrar.
+- Para probar el catalogo ficticio puedes usar 70001 (Valeria Mendoza Castro).
+- Los correos se configuran exclusivamente en el backend; no agregues claves de
+  Resend ni credenciales de TiDB a Angular.
+
+Compilar: npm run build. El build de produccion conserva la URL del backend
+configurada en environment.production.ts. Esta rama no cambia ese destino.

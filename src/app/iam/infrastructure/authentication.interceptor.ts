@@ -11,7 +11,7 @@ export const authenticationInterceptor: HttpInterceptorFn = (request, next) => {
 
   const path = request.url.slice(apiUrl.length).split('?')[0];
   const publicRequest = (request.method === 'POST' && ['/auth/sign-in', '/auth/sign-up', '/enrollment/families'].includes(path)) ||
-    (request.method === 'GET' && ['/clinics', '/doctors'].includes(path));
+    (request.method === 'GET' && (['/clinics', '/doctors', '/medical-registry'].includes(path) || /^\/medical-registry\/[^/]+$/.test(path)));
   if (publicRequest) return next(request);
 
   const authentication = inject(AuthenticationStore);
